@@ -6,9 +6,9 @@ use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\CatalogUrlRewrite\Model\ResourceModel\Category\ProductCollection;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Response\Http;
 
 /**
  * Class Categories
@@ -18,7 +18,7 @@ use Magento\Framework\App\Action\Context;
 class Categories extends Action
 {
 
-    /** @var CollectionFactory */
+    /** @var ProductCollectionFactory */
     protected $productCollectionFactory;
 
     /** @var CategoryCollectionFactory */
@@ -59,7 +59,7 @@ class Categories extends Action
 
         foreach ($products as $product) {
             $this->getResponse()->appendBody($product->getName().'<br /><ul>');
-$product->getCategoryCollection();
+
             foreach ($product->getCategoryIds() as $categoryId) {
                 $this->getResponse()->appendBody('<li>'.$categories[$categoryId].'</li>');
             }
