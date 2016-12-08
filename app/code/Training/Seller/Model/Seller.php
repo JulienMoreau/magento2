@@ -16,7 +16,7 @@ class Seller extends AbstractModel implements IdentityInterface, SellerInterface
 
     public function _construct()
     {
-        $this->_init('');
+        $this->_init(\Training\Seller\Model\ResourceModel\Seller::class);
     }
 
     /**

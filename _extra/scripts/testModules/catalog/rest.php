@@ -10,7 +10,7 @@ $client->connect();
 
 //$client->get('rest/V1/products/24-UB02');
 //$client->get('rest/V1/categories/3');
-$client->get('rest/V1/products', [
+/*$client->get('rest/V1/products', [
     'searchCriteria' => [
         'filterGroups' => [
             [
@@ -31,6 +31,30 @@ $client->get('rest/V1/products', [
                     ]
                 ]
             ]
+        ],
+        'sortOrders' => [
+            [
+                'field' => 'name',
+                'direction' => 'DESC'
+            ]
+        ],
+        'pageSize' => 6
+    ]
+]);*/
+$client->get('rest/V1/seller/id/1');
+$client->get('rest/V1/seller/id/1');
+$client->get('rest/V1/seller/', [
+    'searchCriteria' => [
+        'filterGroups' => [
+            [
+                'filters' => [
+                    [
+                        'field' => 'name',
+                        'conditionType' => 'like',
+                        'value' => '%main%'
+                    ]
+                ]
+            ],
         ],
         'sortOrders' => [
             [

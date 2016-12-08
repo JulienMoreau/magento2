@@ -24,12 +24,12 @@ class Seller extends AbstractDbResource
      */
     public function __construct(
         Context $context,
-        $connectionName,
         MetadataPool $metadataPool,
         EntityManager $entityManager,
-        DateTime $dateTime
+        DateTime $dateTime,
+        $connectionName = null
     ) {
-        parent::__construct($context, $connectionName, $metadataPool, $entityManager, SellerInterface::class);
+        parent::__construct($context, $metadataPool, $entityManager, SellerInterface::class, $connectionName);
         $this->dateTime = $dateTime;
     }
 

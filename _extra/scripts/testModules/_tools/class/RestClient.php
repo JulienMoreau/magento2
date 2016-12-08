@@ -176,7 +176,7 @@ class RestClient extends AbstractClient
 
         // Send the request
         $response = $this->client->send($request);
-
+        var_dump($response->getBody());
         $body = json_decode($response->getBody(), true);
 
         if ($this->isDebug()) {

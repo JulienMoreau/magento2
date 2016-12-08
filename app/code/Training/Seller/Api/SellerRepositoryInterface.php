@@ -6,7 +6,6 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Training\Seller\Api\Data\SellerInterface;
-use Training\Seller\Api\Data\SellerSearchResultsInterface;
 
 /**
  * Interface SellerRepositoryInterface
@@ -19,7 +18,7 @@ interface SellerRepositoryInterface
      * Get a seller by id
      *
      * @param int $id
-     * @return SellerInterface
+     * @return \Training\Seller\Api\Data\SellerInterface
      * @throws NoSuchEntityException
      */
     public function getById($id);
@@ -28,7 +27,7 @@ interface SellerRepositoryInterface
      * Get a seller by identifier
      *
      * @param string $identifier
-     * @return SellerInterface
+     * @return \Training\Seller\Api\Data\SellerInterface
      * @throws NoSuchEntityException
      */
     public function getByIdentifier($identifier);
@@ -37,14 +36,14 @@ interface SellerRepositoryInterface
      * Get sellers
      *
      * @param SearchCriteriaInterface $searchCriteria
-     * @return SellerSearchResultsInterface
+     * @return \Training\Seller\Api\Data\SellerSearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
      * Save seller
      *
-     * @param SellerInterface $seller
+     * @param \Training\Seller\Api\Data\SellerInterface $seller
      * @return $this
      * @throws CouldNotSaveException
      */

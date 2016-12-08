@@ -32,10 +32,10 @@ abstract class AbstractDbResource extends AbstractDb
      */
     public function __construct(
         Context $context,
-        $connectionName,
         MetadataPool $metadataPool,
         EntityManager $entityManager,
-        $entityType
+        $entityType,
+        $connectionName = null
     ) {
         parent::__construct($context, $connectionName);
         $this->metadataPool = $metadataPool;
