@@ -1,62 +1,87 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: formation
- * Date: 08/12/16
- * Time: 12:10
+ * Magento 2 Training Project
+ * Module Training/Seller
  */
-
 namespace Training\Seller\Controller\Seller;
 
-
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\ResponseInterface;
-use Training\Seller\Api\SellerRepositoryInterface;
+use Magento\Framework\Api\SortOrder;
+use Training\Seller\Api\Data\SellerInterface;
 
 /**
- * Class Index
- * @package Training\Seller\Controller\Seller
- * @method Http getResponse()
+ * Action : seller/index
+ *
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
  */
-class Index extends Action
+class Index extends AbstractAction
 {
-
     /**
-     * @var SellerRepositoryInterface
-     */
-    protected $sellerRepository;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    protected $searchCriteriaBuilder;
-
-    public function __construct(
-        Context $context,
-        SellerRepositoryInterface $sellerRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder
-    ) {
-        parent::__construct($context);
-        $this->sellerRepository = $sellerRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-    }
-
-    /**
-     * Dispatch request
+     * Execute the action
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return \Magento\Framework\View\Result\Page
      */
     public function execute()
     {
-        $sellers = $this->sellerRepository->getList($this->searchCriteriaBuilder->create())->getItems();
-        $this->getResponse()->appendBody('<ul>');
-        foreach ($sellers as $seller) {
-            $this->getResponse()->appendBody('<li>' . $seller->getName() . '</li>');
+        $searchCriteria = $this->getSearchCriteria();
+
+        // get the list of the sellers
+        $result = $this->sellerRepository->getList($searchCriteria);
+
+        // save it to the registry
+        $this->registry->register('seller_search_result', $result);
+
+        // display the page using the layout
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->getConfig()->getTitle()->set('Sellers');
+
+        return $resultPage;
+    }
+
+    /**
+     * Get the search criteria
+     *
+     * @return \Magento\Framework\Api\SearchCriteria
+     */
+    protected function getSearchCriteria()
+    {
+        // get the asked filter name, with protection
+        $searchName = (string) $this->_request->getParam('search_name', '');
+        $searchName = strip_tags($searchName);
+        $searchName = preg_replace('/[\'"%]/', '', $searchName);
+        $searchName = trim($searchName);
+
+        // build the filter, if needed, and add it to the criteria
+        if ($searchName!== '') {
+            // build the filter for the name
+            $filters[] = $this->filterBuilder
+                ->setField(SellerInterface::NAME)
+                ->setConditionType('like')
+                ->setValue("%$searchName%")
+                ->create();
+
+            // add the filter to the criteria
+            $this->searchCriteriaBuilder->addFilters($filters);
         }
-        $this->getResponse()->appendBody('</ul>');
+
+        // get the asked sort order, with protection
+        $sortOrder = (string) $this->_request->getParam('sort_order');
+        $availableSort = [
+            SortOrder::SORT_ASC,
+            SortOrder::SORT_DESC,
+        ];
+        if (!in_array($sortOrder, $availableSort)) {
+            $sortOrder = $availableSort[0];
+        }
+
+        // build the sort order and add it to the criteria
+        $sort = $this->sortOrderBuilder
+            ->setField(SellerInterface::NAME)
+            ->setDirection($sortOrder)
+            ->create();
+        $this->searchCriteriaBuilder->addSortOrder($sort);
+
+        // build the criteria
+        return $this->searchCriteriaBuilder->create();
     }
 }

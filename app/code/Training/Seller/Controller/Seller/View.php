@@ -1,63 +1,46 @@
 <?php
-
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Controller\Seller;
 
-
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\NotFoundException;
-use Magento\Framework\Message\PhraseFactory;
-use Training\Seller\Api\SellerRepositoryInterface;
-
 /**
- * Class View
- * @package Training\Seller\Controller\Seller
- * @method Http getResponse()
+ * Action : seller/view
+ *
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
  */
-class View extends Action
+class View extends AbstractAction
 {
-
     /**
-     * @var SellerRepositoryInterface
-     */
-    protected $sellerRepository;
-
-    /**
-     * @var PhraseFactory
-     */
-    protected $phraseFactory;
-
-    /**
-     * View constructor.
-     * @param Context $context
-     * @param SellerRepositoryInterface $sellerRepository
-     */
-    public function __construct(
-        Context $context,
-        SellerRepositoryInterface $sellerRepository
-    ) {
-        parent::__construct($context);
-        $this->sellerRepository = $sellerRepository;
-    }
-
-    /**
-     * Dispatch request
+     * Execute the action
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return \Magento\Framework\View\Result\Page|null
      */
     public function execute()
     {
-        try {
-            $seller = $this->sellerRepository->getByIdentifier($this->getRequest()->getParam('identifier'));
-        } catch (NoSuchEntityException $e) {
-            throw new NotFoundException(__('Page not found.'));
+        // get the asked identifier
+        $identifier = trim($this->getRequest()->getParam('identifier'));
+        if (!$identifier) {
+            $this->_forward('noroute');
+            return null;
         }
 
-        $this->getResponse()->appendBody($seller->getName());
+        // get the asked seller
+        try {
+            $seller = $this->sellerRepository->getByIdentifier($identifier);
+        } catch (\Exception $e) {
+            $this->_forward('noroute');
+            return null;
+        }
+
+        $this->registry->register('current_seller', $seller);
+
+        // display the page using the layout
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->getConfig()->getTitle()->set(__('Seller "%1"', $seller->getName()));
+
+        return $resultPage;
     }
 }
