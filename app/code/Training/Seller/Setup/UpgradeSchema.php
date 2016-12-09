@@ -9,6 +9,7 @@
 namespace Training\Seller\Setup;
 
 
+use Magento\Customer\Model\Customer;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\UpgradeSchemaInterface;
