@@ -1,101 +1,142 @@
 <?php
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Model\ResourceModel;
 
 use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
+use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Training\Seller\Api\Data\SellerInterface;
 
-class Seller extends AbstractDbResource
+/**
+ * Seller Resource Model
+ *
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
+ */
+class Seller extends AbstractDb
 {
-
-    /** @var DateTime */
-    protected $dateTime;
+    use TraitResource;
 
     /**
-     * Seller constructor.
-     * @param Context $context
-     * @param null|string $connectionName
-     * @param MetadataPool $metadataPool
+     * Core date model
+     *
+     * @var DateTime
+     */
+    protected $date;
+
+    /**
+     * Class constructor
+     *
+     * @param Context       $context
      * @param EntityManager $entityManager
-     * @param DateTime $dateTime
+     * @param MetadataPool  $metadataPool
+     * @param DateTime      $date
+     * @param string        $connectionName
      */
     public function __construct(
-        Context $context,
-        MetadataPool $metadataPool,
+        Context       $context,
         EntityManager $entityManager,
-        DateTime $dateTime,
+        MetadataPool  $metadataPool,
+        DateTime      $date,
         $connectionName = null
     ) {
-        parent::__construct($context, $metadataPool, $entityManager, SellerInterface::class, $connectionName);
-        $this->dateTime = $dateTime;
+        $this->date          = $date;
+
+        parent::__construct($context, $connectionName);
+
+        $this->constructTrait(
+            $entityManager,
+            $metadataPool,
+            SellerInterface::class,
+            $this->_mainTable,
+            $this->_idFieldName
+        );
     }
 
     /**
-     * @param \Magento\Framework\Model\AbstractModel $object
-     * @param mixed $value
-     * @param null $field
-     * @return $this
-     */
-    public function load(\Magento\Framework\Model\AbstractModel $object, $value, $field = null)
-    {
-        return $this->loadWithEntityManager($object, $value, $field);
-    }
-
-    /**
-     * @param \Magento\Framework\Model\AbstractModel $object
-     * @return object
-     */
-    public function save(\Magento\Framework\Model\AbstractModel $object)
-    {
-        return $this->saveWithEntityManager($object);
-    }
-    
-    /**
-     * @param \Magento\Framework\Model\AbstractModel $object
-     * @return bool
-     */
-    public function delete(\Magento\Framework\Model\AbstractModel $object)
-    {
-        return $this->deleteWithEntityManager($object);
-    }
-
-    /**
-     * @param \Magento\Framework\Model\AbstractModel $object
-     * @return $this
-     */
-    public function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
-    {
-        $date = $this->dateTime->gmtDate();
-        if ($object->getId() === null) {
-            $object->setData(SellerInterface::CREATED_AT, $date);
-        }
-        $object->setData(SellerInterface::UPDATE_AT, $date);
-        return parent::_beforeSave($object);
-    }
-
-    /**
-     * @param int[] $ids
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function deleteIds($ids)
-    {
-        $condition = $this->getConnection()->quoteInto($this->getIdFieldName() . ' IN (?)', (array)$ids);
-        $this->getConnection()->delete($this->getMainTable(), $condition);
-
-        return $this;
-    }
-
-    /**
-     * Resource initialization
+     * Magento Constructor
      *
      * @return void
      */
     protected function _construct()
     {
-        $this->_init(SellerInterface::TABLE_NAME, SellerInterface::SELLER_ID);
+        $this->_init(SellerInterface::TABLE_NAME, SellerInterface::FIELD_SELLER_ID);
+    }
+
+    /**
+     * Load an object
+     *
+     * @param AbstractModel $object
+     * @param mixed         $value
+     * @param string        $field field to load by (defaults to model id)
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function load(AbstractModel $object, $value, $field = null)
+    {
+        return $this->loadWithEntityManager($object, $value, $field);
+    }
+
+    /**
+     * Save an object
+     *
+     * @param AbstractModel $object
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function save(AbstractModel $object)
+    {
+        return $this->saveWithEntityManager($object);
+    }
+
+    /**
+     * Delete an object
+     *
+     * @param AbstractModel $object
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function delete(AbstractModel $object)
+    {
+        return $this->deleteWithEntityManager($object);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function _beforeSave(AbstractModel $object)
+    {
+        $date = $this->date->gmtDate();
+
+        if (!$object->getId()) {
+            $object->setData(SellerInterface::FIELD_CREATED_AT, $date);
+        }
+        $object->setData(SellerInterface::FIELD_UPDATED_AT, $date);
+
+        return parent::_beforeSave($object);
+    }
+
+    /**
+     * delete a list of entities by the ids
+     *
+     * @param int[] $ids ids to delete
+     *
+     * @return Seller
+     */
+    public function deleteIds($ids)
+    {
+        $condition = $this->getConnection()->quoteInto($this->getIdFieldName() . ' IN (?)', (array) $ids);
+        $this->getConnection()->delete($this->getMainTable(), $condition);
+
+        return $this;
     }
 }

@@ -55,7 +55,7 @@ class Index extends AbstractAction
         if ($searchName!== '') {
             // build the filter for the name
             $filters[] = $this->filterBuilder
-                ->setField(SellerInterface::NAME)
+                ->setField(SellerInterface::FIELD_NAME)
                 ->setConditionType('like')
                 ->setValue("%$searchName%")
                 ->create();
@@ -76,7 +76,7 @@ class Index extends AbstractAction
 
         // build the sort order and add it to the criteria
         $sort = $this->sortOrderBuilder
-            ->setField(SellerInterface::NAME)
+            ->setField(SellerInterface::FIELD_NAME)
             ->setDirection($sortOrder)
             ->create();
         $this->searchCriteriaBuilder->addSortOrder($sort);

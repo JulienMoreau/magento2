@@ -1,98 +1,87 @@
 <?php
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Model\Repository;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Training\Seller\Api\Data\SellerInterface;
-use Training\Seller\Api\Data\SellerSearchResultsInterface;
 use Training\Seller\Api\SellerRepositoryInterface;
+use Training\Seller\Api\Data\SellerSearchResultsInterfaceFactory;
+use Training\Seller\Api\Data\SellerInterface;
+use Training\Seller\Model\SellerFactory;
+use Training\Seller\Model\ResourceModel\Seller as SellerResourceModel;
 
+/**
+ * Seller Repository
+ *
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
+ */
 class Seller extends AbstractRepository implements SellerRepositoryInterface
 {
-
-
+    /**
+     * PHP Constructor
+     *
+     * @param SellerResourceModel                 $objectResource
+     * @param SellerFactory                       $objectFactory
+     * @param SellerSearchResultsInterfaceFactory $searchResultsFactory
+     */
     public function __construct(
-        \Training\Seller\Model\SellerFactory $objectFactory,
-        \Training\Seller\Model\ResourceModel\Seller $objectResource,
-        \Training\Seller\Api\Data\SellerSearchResultsInterfaceFactory $searchResultsFactory
+        SellerFactory                       $objectFactory,
+        SellerResourceModel                 $objectResource,
+        SellerSearchResultsInterfaceFactory $searchResultsFactory
     ) {
         parent::__construct($objectFactory, $objectResource, $searchResultsFactory);
-        $this->setIdentifierFieldName(SellerInterface::IDENTIFIER);
+
+        $this->setIdentifierFieldName(SellerInterface::FIELD_IDENTIFIER);
     }
 
     /**
-     * Get sellers
-     *
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return SellerSearchResultsInterface
+     * @inheritdoc
      */
-    public function getList(SearchCriteriaInterface $searchCriteria)
+    public function getById($objectId)
+    {
+        return $this->getEntityById($objectId);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getByIdentifier($objectIdentifier)
+    {
+        return $this->getEntityByIdentifier($objectIdentifier);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getList(SearchCriteriaInterface $searchCriteria = null)
     {
         return $this->getEntities($searchCriteria);
     }
 
     /**
-     * Save seller
-     *
-     * @param SellerInterface $seller
-     * @return $this
-     * @throws CouldNotSaveException
+     * @inheritdoc
      */
-    public function save(SellerInterface $seller)
+    public function save(SellerInterface $object)
     {
-        /** @noinspection PhpParamsInspection */
-        return $this->saveEntity($seller);
+        return $this->saveEntity($object);
     }
 
     /**
-     * Delete a seller by id
-     *
-     * @param int $id
-     * @return bool
-     * @throws NoSuchEntityException
-     * @SuppressWarnings
+     * @inheritdoc
      */
-    public function deleteById($id)
+    public function deleteById($objectId)
     {
-        return $this->deleteEntity($this->getById($id));
+        return $this->deleteEntity($this->getEntityById($objectId));
     }
 
     /**
-     * Get a seller by id
-     *
-     * @param int $id
-     * @return SellerInterface
-     * @throws NoSuchEntityException
+     * @inheritdoc
      */
-    public function getById($id)
+    public function deleteByIdentifier($objectIdentifier)
     {
-        return $this->getEntityById($id);
-    }
-
-    /**
-     * Delete a seller by identifier
-     *
-     * @param string $identifier
-     * @return bool
-     * @throws NoSuchEntityException
-     */
-    public function deleteByIdentifier($identifier)
-    {
-        /** @noinspection PhpParamsInspection */
-        return $this->deleteEntity($this->getByIdentifier($identifier));
-    }
-
-    /**
-     * Get a seller by identifier
-     *
-     * @param string $identifier
-     * @return SellerInterface
-     * @throws NoSuchEntityException
-     */
-    public function getByIdentifier($identifier)
-    {
-        return $this->getEntityByIdentifier($identifier);
+        return $this->deleteEntity($this->getEntityByIdentifier($objectIdentifier));
     }
 }

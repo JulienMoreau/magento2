@@ -5,12 +5,12 @@
  */
 namespace Training\Seller\Model\Repository;
 
-use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Api\SortOrder;
-use Magento\Framework\Data\Collection\AbstractDb as AbstractCollection;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SortOrder;
+use Magento\Framework\Data\Collection\AbstractDb as AbstractCollection;
 use Magento\Framework\Model\AbstractModel;
 
 /**
@@ -29,13 +29,13 @@ abstract class AbstractRepository
 
     /**
      * Object Factory
-     * @var \Magento\Framework\Model\AbstractModel
+     * @var \Magento\Framework\Model\AbstractModelFactory
      */
     protected $objectFactory;
 
     /**
      * Search Result Factory
-     * @var \Magento\Framework\Api\SearchResults
+     * @var \Magento\Framework\Api\SearchResultsFactory
      */
     protected $searchResultsFactory;
 
@@ -48,6 +48,7 @@ abstract class AbstractRepository
 
     /**
      * Repository cache by identifier
+
      * @var array
      */
     protected $objectRepoByCode = [];
@@ -62,17 +63,17 @@ abstract class AbstractRepository
     /**
      * AbstractRepository constructor.
      *
-     * @param mixed $objectFactory
-     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDbFactory $objectResource
-     * @param \Magento\Framework\Api\SearchResultsFactory $searchResultsFactory
+     * @param \Magento\Framework\Model\AbstractModelFactory        $objectFactory
+     * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $objectResource
+     * @param \Magento\Framework\Api\SearchResultsFactory          $searchResultsFactory
      */
     public function __construct(
         $objectFactory,
         $objectResource,
         $searchResultsFactory
     ) {
-        $this->objectFactory = $objectFactory;
-        $this->objectResource = $objectResource;
+        $this->objectFactory        = $objectFactory;
+        $this->objectResource       = $objectResource;
         $this->searchResultsFactory = $searchResultsFactory;
     }
 
@@ -184,102 +185,6 @@ abstract class AbstractRepository
     }
 
     /**
-     * get the entity collection
-     *
-     * @return AbstractCollection
-     */
-    protected function getEntityCollection()
-    {
-        return $this->objectFactory->create()->getCollection();
-    }
-
-    /**
-     * Prepare a collection from a search criteria
-     *
-     * @param AbstractCollection $collection The collection of object to prepare
-     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
-     *
-     * @return void
-     */
-    protected function prepareCollectionFromSearchCriteria(
-        AbstractCollection $collection,
-        SearchCriteriaInterface $searchCriteria
-    ) {
-        $this->prepareCollectionFromSearchCriteriaFilter($collection, $searchCriteria);
-        $this->prepareCollectionFromSearchCriteriaOrder($collection, $searchCriteria);
-        $this->prepareCollectionFromSearchCriteriaPage($collection, $searchCriteria);
-    }
-
-    /**
-     * Prepare a collection from a search criteria - Filter Part
-     *
-     * @param AbstractCollection $collection The collection of object to prepare
-     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
-     *
-     * @return void
-     */
-    protected function prepareCollectionFromSearchCriteriaFilter(
-        AbstractCollection $collection,
-        SearchCriteriaInterface $searchCriteria
-    ) {
-        // apply filters
-        foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
-            $fields = [];
-            $conditions = [];
-            foreach ($filterGroup->getFilters() as $filter) {
-                $condition = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
-                $fields[] = $filter->getField();
-                $conditions[] = [$condition => $filter->getValue()];
-            }
-            if ($fields) {
-                $collection->addFieldToFilter($fields, $conditions);
-            }
-        }
-    }
-
-    /**
-     * Prepare a collection from a search criteria - Order Part
-     *
-     * @param AbstractCollection $collection The collection of object to prepare
-     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
-     *
-     * @return void
-     */
-    protected function prepareCollectionFromSearchCriteriaOrder(
-        AbstractCollection $collection,
-        SearchCriteriaInterface $searchCriteria
-    ) {
-        // apply orders
-        $sortOrders = $searchCriteria->getSortOrders();
-        if ($sortOrders) {
-            foreach ($sortOrders as $sortOrder) {
-                $isAscending = ($sortOrder->getDirection() == SortOrder::SORT_ASC);
-                $collection->addOrder(
-                    $sortOrder->getField(),
-                    $isAscending ? 'ASC' : 'DESC'
-                );
-            }
-        }
-    }
-
-    /**
-     * Prepare a collection from a search criteria - Page Part
-     *
-     * @param AbstractCollection $collection The collection of object to prepare
-     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
-     *
-     * @return void
-     */
-    protected function prepareCollectionFromSearchCriteriaPage(
-        AbstractCollection $collection,
-        SearchCriteriaInterface $searchCriteria
-    ) {
-        // apply paging
-        $collection->setCurPage($searchCriteria->getCurrentPage());
-        $collection->setPageSize($searchCriteria->getPageSize());
-    }
-
-    /**
      * Save entity
      *
      * @param \Magento\Framework\Model\AbstractModel $object
@@ -327,5 +232,101 @@ abstract class AbstractRepository
         }
 
         return true;
+    }
+
+    /**
+     * get the entity collection
+     *
+     * @return AbstractCollection
+     */
+    protected function getEntityCollection()
+    {
+        return $this->objectFactory->create()->getCollection();
+    }
+
+    /**
+     * Prepare a collection from a search criteria
+     *
+     * @param AbstractCollection      $collection     The collection of object to prepare
+     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
+     *
+     * @return void
+     */
+    protected function prepareCollectionFromSearchCriteria(
+        AbstractCollection $collection,
+        SearchCriteriaInterface $searchCriteria
+    ) {
+        $this->prepareCollectionFromSearchCriteriaFilter($collection, $searchCriteria);
+        $this->prepareCollectionFromSearchCriteriaOrder($collection, $searchCriteria);
+        $this->prepareCollectionFromSearchCriteriaPage($collection, $searchCriteria);
+    }
+
+    /**
+     * Prepare a collection from a search criteria - Filter Part
+     *
+     * @param AbstractCollection      $collection     The collection of object to prepare
+     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
+     *
+     * @return void
+     */
+    protected function prepareCollectionFromSearchCriteriaFilter(
+        AbstractCollection $collection,
+        SearchCriteriaInterface $searchCriteria
+    ) {
+        // apply filters
+        foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
+            $fields = [];
+            $conditions = [];
+            foreach ($filterGroup->getFilters() as $filter) {
+                $condition = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
+                $fields[] = $filter->getField();
+                $conditions[] = [$condition => $filter->getValue()];
+            }
+            if ($fields) {
+                $collection->addFieldToFilter($fields, $conditions);
+            }
+        }
+    }
+
+    /**
+     * Prepare a collection from a search criteria - Order Part
+     *
+     * @param AbstractCollection      $collection     The collection of object to prepare
+     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
+     *
+     * @return void
+     */
+    protected function prepareCollectionFromSearchCriteriaOrder(
+        AbstractCollection $collection,
+        SearchCriteriaInterface $searchCriteria
+    ) {
+        // apply orders
+        $sortOrders = $searchCriteria->getSortOrders();
+        if ($sortOrders) {
+            foreach ($sortOrders as $sortOrder) {
+                $isAscending = ($sortOrder->getDirection() == SortOrder::SORT_ASC);
+                $collection->addOrder(
+                    $sortOrder->getField(),
+                    $isAscending ? 'ASC' : 'DESC'
+                );
+            }
+        }
+    }
+
+    /**
+     * Prepare a collection from a search criteria - Page Part
+     *
+     * @param AbstractCollection      $collection     The collection of object to prepare
+     * @param SearchCriteriaInterface $searchCriteria The search criteria to use
+     *
+     * @return void
+     */
+    protected function prepareCollectionFromSearchCriteriaPage(
+        AbstractCollection $collection,
+        SearchCriteriaInterface $searchCriteria
+    ) {
+        // apply paging
+        $collection->setCurPage($searchCriteria->getCurrentPage());
+        $collection->setPageSize($searchCriteria->getPageSize());
     }
 }

@@ -1,94 +1,111 @@
 <?php
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Api\Data;
 
 /**
- * Interface SellerInterface
- * @package Training\Seller\Api\Data
+ * Seller Data Interface
+ *
+ * @api
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
  */
 interface SellerInterface
 {
+    /**
+     * Name of the Mysql TABLE
+     */
+    const TABLE_NAME    = 'training_seller';
 
-    const TABLE_NAME = 'training_seller';
-
-    const SELLER_ID = 'seller_id';
-    const IDENTIFIER = 'identifier';
-    const NAME = 'name';
-    const CREATED_AT = 'created_at';
-    const UPDATE_AT = 'update_at';
+    /**#@+
+     * Constants for keys of data array. Identical to the name of the getter in snake case
+     */
+    const FIELD_SELLER_ID  = 'seller_id';
+    const FIELD_IDENTIFIER = 'identifier';
+    const FIELD_NAME       = 'name';
+    const FIELD_UPDATED_AT = 'updated_at';
+    const FIELD_CREATED_AT = 'created_at';
+    /**#@-*/
 
     /**
-     * Get seller id
+     * Get field: seller_id
      *
      * @return int|null
      */
     public function getSellerId();
 
     /**
-     * Set seller id
-     *
-     * @param int $sellerId
-     * @return $this
-     */
-    public function setSellerId($sellerId);
-
-    /**
-     * Get identifier
+     * Get field: identifier
      *
      * @return string
      */
     public function getIdentifier();
 
     /**
-     * Set identifier
-     *
-     * @param string $identifier
-     * @return $this
-     */
-    public function setIdentifier($identifier);
-
-    /**
-     * Get name
+     * Get field: name
      *
      * @return string
      */
     public function getName();
 
     /**
-     * Set name
+     * Get field: updated_at
      *
-     * @param string $name
-     * @return $this
+     * @return string|null
      */
-    public function setName($name);
+    public function getUpdatedAt();
 
     /**
-     * Get created at
+     * Get field: created_at
      *
      * @return string|null
      */
     public function getCreatedAt();
 
     /**
-     * Set created at
+     * Set field: seller_id
      *
-     * @param string|null $createdAt
-     * @return $this
+     * @param int $value
+     *
+     * @return SellerInterface
      */
-    public function setCreatedAt($createdAt);
+    public function setSellerId($value);
 
     /**
-     * Get updated at
+     * Set field: identifier
      *
-     * @return string
+     * @param string $value
+     *
+     * @return SellerInterface
      */
-    public function getUpdateAt();
+    public function setIdentifier($value);
 
     /**
-     * Set updated at
+     * Set field: name
      *
-     * @param string|null $updateAt
-     * @return $this
+     * @param string $value
+     *
+     * @return SellerInterface
      */
-    public function setUpdateAt($updateAt);
+    public function setName($value);
+
+    /**
+     * Set field: updated_at
+     *
+     * @param string $value
+     *
+     * @return SellerInterface
+     */
+    public function setUpdatedAt($value);
+
+    /**
+     * Set field: created_at
+     *
+     * @param string $value
+     *
+     * @return SellerInterface
+     */
+    public function setCreatedAt($value);
 }

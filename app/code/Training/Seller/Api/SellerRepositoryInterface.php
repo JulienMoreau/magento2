@@ -1,69 +1,78 @@
 <?php
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Exception\CouldNotSaveException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Training\Seller\Api\Data\SellerInterface;
+use \Training\Seller\Api\Data\SellerInterface;
 
 /**
- * Interface SellerRepositoryInterface
- * @package Training\Seller\Api
+ * Seller Repository Interface
+ *
+ * @api
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
  */
 interface SellerRepositoryInterface
 {
-
     /**
-     * Get a seller by id
+     * Retrieve a seller by its id
      *
-     * @param int $id
+     * @param int $objectId
+     *
      * @return \Training\Seller\Api\Data\SellerInterface
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getById($id);
+    public function getById($objectId);
 
     /**
-     * Get a seller by identifier
+     * Retrieve a seller by its identifier
      *
-     * @param string $identifier
+     * @param string $objectIdentifier
+     *
      * @return \Training\Seller\Api\Data\SellerInterface
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getByIdentifier($identifier);
+    public function getByIdentifier($objectIdentifier);
 
     /**
-     * Get sellers
+     * Retrieve sellers which match a specified criteria.
      *
-     * @param SearchCriteriaInterface $searchCriteria
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria search criteria
+     *
      * @return \Training\Seller\Api\Data\SellerSearchResultsInterface
      */
-    public function getList(SearchCriteriaInterface $searchCriteria);
+    public function getList(SearchCriteriaInterface $searchCriteria = null);
 
     /**
-     * Save seller
+     * save a seller
      *
-     * @param \Training\Seller\Api\Data\SellerInterface $seller
-     * @return $this
-     * @throws CouldNotSaveException
+     * @param \Training\Seller\Api\Data\SellerInterface $object
+     *
+     * @return \Training\Seller\Api\Data\SellerInterface
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function save(SellerInterface $seller);
+    public function save(SellerInterface $object);
 
     /**
-     * Delete a seller by id
+     * Delete a seller by its id
      *
-     * @param int $id
+     * @param int $objectId
+     *
      * @return bool
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function deleteById($id);
+    public function deleteById($objectId);
 
     /**
-     * Delete a seller by identifier
+     * Delete a seller by its identifier
      *
-     * @param string $identifier
+     * @param string $objectIdentifier
+     *
      * @return bool
-     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function deleteByIdentifier($identifier);
+    public function deleteByIdentifier($objectIdentifier);
 }

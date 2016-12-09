@@ -8,6 +8,8 @@
         <title>List of Sellers</title>
     </head>
     <body>
+        <referenceBlock name="training.seller.content.top" remove="true" />
+
         <referenceContainer name="content">
             <block
                 class="Training\Seller\Block\Seller\Index"
@@ -25,6 +27,5 @@
                 cacheable="false"
             />
         </referenceContainer>
-        <referenceBlock name="training.seller.content.top" remove="true"></referenceBlock>
     </body>
 </page>

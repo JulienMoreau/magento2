@@ -1,52 +1,31 @@
 <?php
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Controller\Adminhtml\Seller;
 
-
-use Magento\Framework\App\Response\Http;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Training\Seller\Api\SellerRepositoryInterface;
-
 /**
- * Class Index
- * @package Training\Seller\Controller\Adminhtml\Seller
- * @method Http getResponse()
+ * Admin Action : seller/index
+ *
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
  */
-class Index extends \Magento\Backend\App\Action
+class Index extends AbstractAction
 {
-
-    protected $sellerRepository;
-
-    public function __construct(\Magento\Backend\App\Action\Context $context, SellerRepositoryInterface $sellerRepository)
-    {
-        parent::__construct($context);
-        $this->sellerRepository = $sellerRepository;
-    }
-
-
     /**
-     * Dispatch request
+     * Execute the action
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return \Magento\Framework\View\Result\Page
      */
     public function execute()
     {
-        try {
-            $seller = $this->sellerRepository->getById(1);
-        } catch (NoSuchEntityException $e) {
-            throw new NotFoundException(__('Page not found.'));
-        }
+        $breadMain = __('Manage Sellers');
 
-        $this->getResponse()->appendBody($seller->getName());
-    }
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('Training_Seller::manage');
+        $resultPage->getConfig()->getTitle()->prepend($breadMain);
 
-    /**
-     * @return bool
-     */
-    public function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Training_Seller::manage');
+        return $resultPage;
     }
 }

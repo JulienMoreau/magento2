@@ -1,26 +1,34 @@
 <?php
-
+/**
+ * Magento 2 Training Project
+ * Module Training/Seller
+ */
 namespace Training\Seller\Api\Data;
-
 
 use Magento\Framework\Api\SearchResultsInterface;
 
+/**
+ * Seller Search result Data Interface
+ *
+ * @api
+ * @author    Laurent MINGUET <lamin@smile.fr>
+ * @copyright 2016 Smile
+ */
 interface SellerSearchResultsInterface extends SearchResultsInterface
 {
-
     /**
-     * Set sellers
+     * Get seller list
      *
-     * @param SellerInterface[] $items
-     * @return $this
-     */
-    public function setItems(array $items);
-
-    /**
-     * Get sellers
-     *
-     * @return SellerInterface[]
+     * @return \Training\Seller\Api\Data\SellerInterface[]
      */
     public function getItems();
 
+    /**
+     * Set seller list
+     *
+     * @param \Training\Seller\Api\Data\SellerInterface[] $items list of sellers
+     *
+     * @return $this
+     */
+    public function setItems(array $items);
 }
