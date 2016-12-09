@@ -1,0 +1,13 @@
+<?php
+/** @var \Training\Seller\Block\Product\Sellers $block */
+$sellers = $block->getProductSellers();
+if (!empty($sellers)) :
+    ?>
+    <ul>
+        <?php foreach ($sellers as $seller): ?>
+            <li>
+                <?php echo $block->escapeHtml($seller->getName()); ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
